@@ -41,6 +41,7 @@ export default function ProductDetail() {
     const fetchData = async () => {
       setIsLoading(true);
       setQuantity(1);
+      setThumbsSwiper(null);
       window.scrollTo(0, 0);
       try {
         const [productRes, relatedRes] = await Promise.all([
@@ -147,7 +148,7 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
           {/* ẢNH - SWIPER */}
-          <div>
+          <div key={id}>
             {/* Main swiper */}
             <Swiper
               modules={[Navigation, Pagination, Thumbs]}
