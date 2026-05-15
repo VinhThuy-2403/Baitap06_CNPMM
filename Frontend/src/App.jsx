@@ -5,6 +5,7 @@ import VerifyOtp from "./pages/VerifyOtp";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import EditProfile from "./pages/EditProfile";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/user/profile" element={<EditProfile />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </Router>
   );
