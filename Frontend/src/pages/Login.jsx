@@ -15,17 +15,12 @@ const Login = () => {
   const { isLoading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const resultAction = await dispatch(loginUser({ email, password }));
-
-    if (loginUser.fulfilled.match(resultAction)) {
-      if (resultAction.payload && resultAction.payload.redirectUrl) {
-        navigate(resultAction.payload.redirectUrl);
-      } else {
-        navigate("/edit-profile");
-      }
-    }
-  };
+  e.preventDefault();
+  const resultAction = await dispatch(loginUser({ email, password }));
+  if (loginUser.fulfilled.match(resultAction)) {
+    navigate("/home");
+  }
+};
 
   return (
     <div className="min-h-[100svh] w-full bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden text-gray-900">

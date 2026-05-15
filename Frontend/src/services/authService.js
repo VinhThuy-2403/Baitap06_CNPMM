@@ -36,3 +36,18 @@ export const editProfileAPI = async (data) => {
   const response = await api.put("/auth/edit-profile", data);
   return response.data;
 };
+
+export const getSaleProductsAPI = async (page = 1, limit = 6) => {
+  const response = await api.get(`/products/sale?page=${page}&limit=${limit}`);
+  return response.data;
+};
+
+export const getNewProductsAPI = async (page = 1, limit = 6) => {
+  const response = await api.get(`/products/new?page=${page}&limit=${limit}`);
+  return response.data;
+};
+
+export const getBestSellerProductsAPI = async (page = 1, limit = 6) => {
+  const response = await api.get(`/products/best-seller?page=${page}&limit=${limit}`);
+  return response.data;
+};
