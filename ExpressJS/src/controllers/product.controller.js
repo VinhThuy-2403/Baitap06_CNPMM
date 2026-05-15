@@ -45,9 +45,42 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await productService.getProductById(id);
+    return res.json({ success: true, data: product });
+  } catch (error) {
+    return res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getRelatedProducts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await productService.getProductById(id);
+    const related = await productService.getRelatedProducts({
+      category: product.category,
+      excludeId: id,
+      limit: 6,
+    });
+    return res.json({ success: true, data: related });
+  } catch (error) {
+    return res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   getSaleProducts,
   getNewProducts,
   getBestSellerProducts,
   getAllProducts,
+  getProductById,
+  getRelatedProducts,
 };

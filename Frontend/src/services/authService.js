@@ -51,3 +51,13 @@ export const getBestSellerProductsAPI = async (page = 1, limit = 6) => {
   const response = await api.get(`/products/best-seller?page=${page}&limit=${limit}`);
   return response.data;
 };
+
+export const getProductByIdAPI = async (id) => {
+  const response = await api.get(`/products/${id}`);
+  return response.data;
+};
+
+export const getRelatedProductsAPI = async (id) => {
+  const response = await api.get(`/products/${id}/related`);
+  return response.data;
+};

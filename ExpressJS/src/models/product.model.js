@@ -41,6 +41,10 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    sold: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
     isNew: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

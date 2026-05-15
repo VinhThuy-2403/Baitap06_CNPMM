@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const sequelize = require("./config/db");
+require("./models/index"); // load associations
 const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/product.routes");
 const seedProducts = require("./seeders/product.seeder");
@@ -16,7 +17,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 
 app.get("/", (req, res) => {
-  res.json({ message: "API Security MySQL Sequelize running..." });
+  res.json({ message: "API running..." });
 });
 
 const PORT = process.env.PORT || 8080;
