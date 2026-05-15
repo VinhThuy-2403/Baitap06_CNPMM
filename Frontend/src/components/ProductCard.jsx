@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 const formatPrice = (price) =>
   new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -5,12 +7,17 @@ const formatPrice = (price) =>
   }).format(price);
 
 export default function ProductCard({ product }) {
+  const navigate = useNavigate();
+
   const discount = product.salePrice
     ? Math.round(((product.price - product.salePrice) / product.price) * 100)
     : null;
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+    <div
+      onClick={() => navigate(`/product/${product.id}`)}
+      className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
+    >
       {/* Image */}
       <div className="relative overflow-hidden h-52">
         <img
@@ -22,7 +29,6 @@ export default function ProductCard({ product }) {
               "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400";
           }}
         />
-        {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {product.isSale && discount && (
             <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
@@ -50,11 +56,6 @@ export default function ProductCard({ product }) {
         <h3 className="font-semibold text-gray-800 mt-1 mb-2 line-clamp-2 text-sm">
           {product.name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-3">
-          {product.description}
-        </p>
-
-        {/* Price */}
         <div className="flex items-center gap-2 mb-3">
           {product.salePrice ? (
             <>
@@ -71,8 +72,6 @@ export default function ProductCard({ product }) {
             </span>
           )}
         </div>
-
-        {/* Button */}
         <button className="w-full py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-sm rounded-xl transition-colors">
           Xem chi tiết
         </button>

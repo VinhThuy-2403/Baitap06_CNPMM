@@ -8,6 +8,7 @@ const products = [
     price: 32990000,
     salePrice: 28990000,
     image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400",
+    image2: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSFu2ydmpAqSXGoMa2T61L1eN9GKEHORpVltXX23n6X6KH4ni1s9d1DEhuLhCtPnKRLP4_8HbBhAaG-pQtoeH65SHyHSPciSN_IqeMpPQigj3xWgI8t2RDks9npLKCDi7fs73cbCsxRJw&usqp=CAc", 
     brand: "Canon",
     category: "DSLR",
     stock: 15,
