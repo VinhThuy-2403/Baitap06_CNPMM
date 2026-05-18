@@ -1,7 +1,12 @@
 const { Product, ProductImage } = require("../models/index");
 const { Op } = require("sequelize");
 
-const getProducts = async ({ where = {}, page = 1, limit = 6, order = [["createdAt", "DESC"]] }) => {
+const getProducts = async ({
+  where = {},
+  page = 1,
+  limit = 6,
+  order = [["createdAt", "DESC"]],
+}) => {
   const offset = (page - 1) * limit;
   const { count, rows } = await Product.findAndCountAll({
     where,
@@ -39,7 +44,7 @@ const getAllProducts = async ({ page, limit, brand, category }) => {
   return getProducts({ where, page, limit });
 };
 
-// Lấy chi tiết 1 sản phẩm kèm ảnh
+// Lấy chi tiết 1 sản phẩm kèm ảnh — KHÔNG tăng views
 const getProductById = async (id) => {
   const product = await Product.findByPk(id, {
     include: [
@@ -59,26 +64,28 @@ const getProductById = async (id) => {
   return product;
 };
 
-// Lấy sản phẩm tương tự (cùng danh mục, khác id)
+// Tăng views riêng — chỉ gọi từ controller getProductById
+  const incrementViews = async (id) => {
+  await Product.increment("views", { by: 1, where: { id } });
+};
+
 const getRelatedProducts = async ({ category, excludeId, limit = 6 }) => {
   const rows = await Product.findAll({
-    where: {
-      category,
-      id: { [Op.ne]: excludeId },
-    },
+    where: { category, id: { [Op.ne]: excludeId } },
     limit,
     order: [["sold", "DESC"]],
   });
   return rows;
 };
 
-const searchProducts = async ({ keyword, brand, category, minPrice, maxPrice, isNew, isBestSeller, isSale, sortBy, page, limit }) => {
+const searchProducts = async ({
+  keyword, brand, category,
+  minPrice, maxPrice,
+  isNew, isBestSeller, isSale,
+  sortBy, page, limit,
+}) => {
   const where = {};
-  const { Op } = require("sequelize");
-
-  if (keyword) {
-    where.name = { [Op.like]: `%${keyword}%` };
-  }
+  if (keyword) where.name = { [Op.like]: `%${keyword}%` };
   if (brand) where.brand = brand;
   if (category) where.category = category;
   if (isNew === "true") where.isNew = true;
@@ -89,14 +96,43 @@ const searchProducts = async ({ keyword, brand, category, minPrice, maxPrice, is
     if (minPrice) where.price[Op.gte] = parseInt(minPrice);
     if (maxPrice) where.price[Op.lte] = parseInt(maxPrice);
   }
-
   let order = [["createdAt", "DESC"]];
   if (sortBy === "price_asc") order = [["price", "ASC"]];
   if (sortBy === "price_desc") order = [["price", "DESC"]];
   if (sortBy === "best_seller") order = [["sold", "DESC"]];
   if (sortBy === "newest") order = [["createdAt", "DESC"]];
-
+  if (sortBy === "most_viewed") order = [["views", "DESC"]];
   return getProducts({ where, page, limit, order });
+};
+
+// Top 10 bán chạy nhất
+const getTopBestSeller = async ({ limit = 10 }) => {
+  const rows = await Product.findAll({
+    order: [["sold", "DESC"]],
+    limit,
+  });
+  return rows;
+};
+
+// Top 10 xem nhiều nhất
+const getTopMostViewed = async ({ limit = 10 }) => {
+  const rows = await Product.findAll({
+    order: [["views", "DESC"]],
+    limit,
+  });
+  return rows;
+};
+
+// Tất cả sản phẩm theo danh mục — lazy loading
+const getProductsByCategory = async ({ category, page, limit }) => {
+  const where = {};
+  if (category && category !== "all") where.category = category;
+  return getProducts({
+    where,
+    page,
+    limit,
+    order: [["createdAt", "DESC"]],
+  });
 };
 
 module.exports = {
@@ -105,6 +141,10 @@ module.exports = {
   getBestSellerProducts,
   getAllProducts,
   getProductById,
+  incrementViews,
   getRelatedProducts,
-  searchProducts
+  searchProducts,
+  getTopBestSeller,
+  getTopMostViewed,
+  getProductsByCategory,
 };

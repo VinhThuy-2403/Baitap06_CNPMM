@@ -67,3 +67,20 @@ export const searchProductsAPI = async (params) => {
   const response = await api.get(`/products/search?${query}`);
   return response.data;
 };
+
+export const getTopBestSellerAPI = async (limit = 10) => {
+  const response = await api.get(`/products/top-best-seller?limit=${limit}`);
+  return response.data;
+};
+
+export const getTopMostViewedAPI = async (limit = 10) => {
+  const response = await api.get(`/products/top-most-viewed?limit=${limit}`);
+  return response.data;
+};
+
+export const getProductsByCategoryAPI = async (category = "all", page = 1, limit = 8) => {
+  const response = await api.get(
+    `/products/by-category?category=${category}&page=${page}&limit=${limit}`
+  );
+  return response.data;
+};

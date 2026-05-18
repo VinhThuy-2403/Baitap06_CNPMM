@@ -45,6 +45,10 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    views: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
     isNew: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

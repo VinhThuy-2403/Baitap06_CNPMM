@@ -10,6 +10,9 @@ import {
 import ProductSection from "../components/ProductSection";
 // import { Camera, LogOut, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { Camera, LogOut, User, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import TopProductsCarousel from "../components/TopProductsCarousel";
+import AllProductsSection from "../components/AllProductsSection";
+import { getTopBestSellerAPI, getTopMostViewedAPI } from "../services/authService";
 
 const banners = [
   {
@@ -57,6 +60,29 @@ export default function Home() {
   const [salePage, setSalePage] = useState(1);
   const [newPage, setNewPage] = useState(1);
   const [bestPage, setBestPage] = useState(1);
+
+  const [topBestSeller, setTopBestSeller] = useState([]);
+  const [topMostViewed, setTopMostViewed] = useState([]);
+  const [topLoading, setTopLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTop = async () => {
+      setTopLoading(true);
+      try {
+        const [bestRes, viewRes] = await Promise.all([
+          getTopBestSellerAPI(10),
+          getTopMostViewedAPI(10),
+        ]);
+        setTopBestSeller(bestRes.data);
+        setTopMostViewed(viewRes.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setTopLoading(false);
+      }
+    };
+    fetchTop();
+  }, []);
 
   // Auto slide banner
   useEffect(() => {
@@ -268,6 +294,26 @@ export default function Home() {
           onPageChange={setBestPage}
           isLoading={bestSeller.isLoading}
         />
+
+        <div className="border-t border-gray-700/50 my-4" />
+
+        <TopProductsCarousel
+          title="Top 10 bán chạy nhất"
+          icon="trending"
+          products={topBestSeller}
+          isLoading={topLoading}
+        />
+
+        <TopProductsCarousel
+          title="Top 10 xem nhiều nhất"
+          icon="eye"
+          products={topMostViewed}
+          isLoading={topLoading}
+        />
+
+        <div className="border-t border-gray-700/50 my-4" />
+
+        <AllProductsSection />
 
       </div>
 
