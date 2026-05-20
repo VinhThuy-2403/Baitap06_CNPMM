@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice";
 import {
@@ -13,6 +12,9 @@ import { Camera, LogOut, User, ChevronLeft, ChevronRight, Search } from "lucide-
 import TopProductsCarousel from "../components/TopProductsCarousel";
 import AllProductsSection from "../components/AllProductsSection";
 import { getTopBestSellerAPI, getTopMostViewedAPI } from "../services/authService";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleCart, fetchCart } from "../redux/cartSlice";
+import { ShoppingCart } from "lucide-react";
 
 const banners = [
   {
@@ -53,7 +55,7 @@ const brands = ["Canon", "Sony", "Nikon", "Fujifilm"];
 export default function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const { sale, newProducts, bestSeller } = useSelector((state) => state.product);
 
   const [banner, setBanner] = useState(0);
@@ -64,6 +66,12 @@ export default function Home() {
   const [topBestSeller, setTopBestSeller] = useState([]);
   const [topMostViewed, setTopMostViewed] = useState([]);
   const [topLoading, setTopLoading] = useState(true);
+
+  const { count } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    if (token) dispatch(fetchCart());
+  }, [token]);
 
   useEffect(() => {
     const fetchTop = async () => {
@@ -147,6 +155,21 @@ export default function Home() {
             <Search className="w-4 h-4 text-yellow-400" />
             <span className="hidden sm:block text-gray-300 text-sm">Tìm kiếm</span>
           </button>
+
+          {/* Cart icon */}
+          <button
+            onClick={() => dispatch(toggleCart())}
+            className="relative flex items-center gap-2 bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-xl transition-colors"
+          >
+            <ShoppingCart className="w-4 h-4 text-yellow-400" />
+            <span className="hidden sm:block text-gray-300 text-sm">Giỏ hàng</span>
+            {count > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                {count > 9 ? "9+" : count}
+              </span>
+            )}
+          </button>
+
 
           {/* User */}
           <div className="flex items-center gap-3">

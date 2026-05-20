@@ -3,9 +3,10 @@ const cors = require("cors");
 require("dotenv").config();
 
 const sequelize = require("./config/db");
-require("./models/index"); // load associations
+require("./models/index");
 const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/product.routes");
+const cartRoutes = require("./routes/cart.routes");
 const seedProducts = require("./seeders/product.seeder");
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "API running..." });

@@ -8,10 +8,15 @@ import EditProfile from "./pages/EditProfile";
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import SearchPage from "./pages/SearchPage";
+import CartPage from "./pages/CartPage";
+import CartDrawer from "./components/CartDrawer";
 
 function App() {
   return (
     <Router>
+      {/* CartDrawer hiển thị trên tất cả trang */}
+      <CartDrawer />
+
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
@@ -23,6 +28,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
     </Router>
   );
