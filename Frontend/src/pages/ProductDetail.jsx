@@ -19,6 +19,8 @@ import {
   Tag,
   Star,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, openCart } from "../redux/cartSlice";
 
 const formatPrice = (price) =>
   new Intl.NumberFormat("vi-VN", {
@@ -35,7 +37,28 @@ export default function ProductDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  const [added, setAdded] = useState(false);
+
+
+  const dispatch = useDispatch();
+  const { isLoading: cartLoading, error: cartError } = useSelector((state) => state.cart);
+  const { token } = useSelector((state) => state.auth);
+  const [cartMsg, setCartMsg] = useState("");
+
+  const handleAddToCart = async () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    setCartMsg("");
+    const result = await dispatch(addToCart({ productId: product.id, quantity }));
+    if (addToCart.fulfilled.match(result)) {
+      setCartMsg("Đã thêm vào giỏ hàng!");
+      dispatch(openCart());
+      setTimeout(() => setCartMsg(""), 3000);
+    } else {
+      setCartMsg(result.payload || "Thêm vào giỏ thất bại");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,10 +82,10 @@ export default function ProductDetail() {
     fetchData();
   }, [id]);
 
-  const handleAddToCart = () => {
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
-  };
+  // const handleAddToCart = () => {
+  //   setAdded(true);
+  //   setTimeout(() => setAdded(false), 2000);
+  // };
 
   if (isLoading) {
     return (
@@ -314,23 +337,32 @@ export default function ProductDetail() {
               </div>
             )}
 
+            {/* Cart message */}
+            {cartMsg && (
+              <div className={`p-3 rounded-xl text-sm text-center ${
+                cartMsg.includes("thất bại") || cartMsg.includes("hết")
+                  ? "bg-red-500/10 text-red-400"
+                  : "bg-green-500/10 text-green-400"
+              }`}>
+                {cartMsg}
+              </div>
+            )}
+
             {/* Nút thêm giỏ hàng */}
             <button
               onClick={handleAddToCart}
-              disabled={product.stock === 0}
+              disabled={product.stock === 0 || cartLoading}
               className={`flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-base transition-all ${
                 product.stock === 0
                   ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                  : added
-                  ? "bg-green-500 text-white"
                   : "bg-yellow-400 hover:bg-yellow-500 text-black"
               }`}
             >
               <ShoppingCart className="w-5 h-5" />
-              {product.stock === 0
+              {cartLoading
+                ? "Đang thêm..."
+                : product.stock === 0
                 ? "Hết hàng"
-                : added
-                ? "✓ Đã thêm vào giỏ!"
                 : "Thêm vào giỏ hàng"}
             </button>
           </div>

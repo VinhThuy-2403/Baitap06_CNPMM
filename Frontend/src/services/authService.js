@@ -84,3 +84,29 @@ export const getProductsByCategoryAPI = async (category = "all", page = 1, limit
   );
   return response.data;
 };
+
+// Cart APIs
+export const getCartAPI = async () => {
+  const response = await api.get("/cart");
+  return response.data;
+};
+
+export const addToCartAPI = async (productId, quantity = 1) => {
+  const response = await api.post("/cart", { productId, quantity });
+  return response.data;
+};
+
+export const updateCartItemAPI = async (cartItemId, quantity) => {
+  const response = await api.put(`/cart/${cartItemId}`, { quantity });
+  return response.data;
+};
+
+export const removeFromCartAPI = async (cartItemId) => {
+  const response = await api.delete(`/cart/${cartItemId}`);
+  return response.data;
+};
+
+export const clearCartAPI = async () => {
+  const response = await api.delete("/cart");
+  return response.data;
+};
